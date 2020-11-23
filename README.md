@@ -1,4 +1,8 @@
-# django-docs
+# djangoの仕組み
+
+|  |  |
+|--|--|
+| 更新 | 2020-11-23 |
 
 ## Django Rest Frameworkで作るAPI
 
