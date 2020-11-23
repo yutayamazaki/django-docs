@@ -4,7 +4,14 @@
 |--|--|
 | 更新 | 2020-11-23 |
 
-## Django Rest Frameworkで作るAPI
+- [APIの実装](#APIの実装)
+- Permissions
+- Request
+- Response
+- Serializers
+
+
+## APIの実装
 
 Django Rest Frameworkでは主に`rest_framework.views.APIView`を継承したviewクラスを作成することでAPIの実装を行う．また別の方法として関数型のviewを作成する`rest_framework.decorators.api_view`を利用する方法もあるが，こちらは`APIView`をデコレータで使える形にしたものであるため詳細な説明は省略する．
 
