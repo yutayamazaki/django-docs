@@ -2,7 +2,7 @@
 
 |  |  |
 |--|--|
-| 更新日 | 2020-11-25 |
+| 更新日 | 2020-11-27 |
 | Django | v3.1.3 |
 | Django Rest Framework | v3.12.2 |
 
@@ -117,6 +117,55 @@ class WSGIRequest(HttpRequest):
 ```
 
 Djangoではこのようにして初期化された`HTTPRequest`クラスを用いて適切にHTTPリクエストの情報を利用しながら処理を記述する．
+
+## Django QueryDict
+
+DjangoのHTTPRequestは以下のようにGETとPOSTというメンバーを持ち，それぞれ[django.http.QueryDict](https://github.com/django/django/blob/master/django/http/request.py)というデータ構造を持つ．本節ではこの`QueryDict`について解説する．
+
+```python
+class HttpRequest:
+
+    _encoding = None
+    _upload_handlers = []
+
+    def __init__(self):
+        self.GET = QueryDict(mutable=True)
+        self.POST = QueryDict(mutable=True)
+```
+
+`QueryDict`は[django.utils.datastructures.MultiValueDict](https://github.com/django/django/blob/master/django/utils/datastructures.py)を継承したクラスであり，基本的な挙動は`MultiValueDict`に準ずる．`QueryDict`に特有の機能としてはコンストラクタの引数でmutableとimmutableの切り替えができる点とdictのset時にbytes型をstr型に変換出来る点がある．これによってbytesでやりとりされるHTTP通信のパラメータをよしなに扱うことができる．
+
+immutableの実装には`_assert_mutable`関数が利用されており，値を変更する処理の前に`_assert_mutable`を入れている．
+
+```python
+class QueryDict(MultiValueDict):
+
+    def __init__(self, query_string=None, mutable=False, encoding=None):
+        super().__init__()
+        ...
+        self._mutable = mutable
+    ...
+    def _assert_mutable(self):
+        if not self._mutable:
+            raise AttributeError("This QueryDict instance is immutable")
+```
+
+例えば要素を追加する`__setitem__`や要素を削除する`__delitem__`に実装は以下のように`_assert_mutable`の実行後に変更処理を行うようになっている．
+
+```python
+    def __setitem__(self, key, value):
+        self._assert_mutable()
+        key = bytes_to_text(key, self.encoding)
+        value = bytes_to_text(value, self.encoding)
+        super().__setitem__(key, value)
+
+    def __delitem__(self, key):
+        self._assert_mutable()
+        super().__delitem__(key)
+```
+
+## DjangoのMultiValueDict
+
 
 ## Django Rest FrameworkのRequestクラス
 
