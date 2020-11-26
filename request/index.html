@@ -230,6 +230,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#django-querydict" class="md-nav__link">
+    Django QueryDict
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#djangomultivaluedict" class="md-nav__link">
+    DjangoのMultiValueDict
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#django-rest-frameworkrequest" class="md-nav__link">
     Django Rest FrameworkのRequestクラス
   </a>
@@ -281,6 +295,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#django-querydict" class="md-nav__link">
+    Django QueryDict
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#djangomultivaluedict" class="md-nav__link">
+    DjangoのMultiValueDict
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#django-rest-frameworkrequest" class="md-nav__link">
     Django Rest FrameworkのRequestクラス
   </a>
@@ -311,7 +339,7 @@
 <tbody>
 <tr>
 <td>更新日</td>
-<td>2020-11-25</td>
+<td>2020-11-27</td>
 </tr>
 <tr>
 <td>Django</td>
@@ -439,6 +467,42 @@
     <span class="n">POST</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_post</span><span class="p">,</span> <span class="n">_set_post</span><span class="p">)</span>
 </code></pre></div>
 <p>Djangoではこのようにして初期化された<code>HTTPRequest</code>クラスを用いて適切にHTTPリクエストの情報を利用しながら処理を記述する．</p>
+<h2 id="django-querydict">Django QueryDict</h2>
+<p>DjangoのHTTPRequestは以下のようにGETとPOSTというメンバーを持ち，それぞれ<a href="https://github.com/django/django/blob/master/django/http/request.py">django.http.QueryDict</a>というデータ構造を持つ．本節ではこの<code>QueryDict</code>について解説する．</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">HttpRequest</span><span class="p">:</span>
+
+    <span class="n">_encoding</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">_upload_handlers</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">GET</span> <span class="o">=</span> <span class="n">QueryDict</span><span class="p">(</span><span class="n">mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">POST</span> <span class="o">=</span> <span class="n">QueryDict</span><span class="p">(</span><span class="n">mutable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p><code>QueryDict</code>は<a href="https://github.com/django/django/blob/master/django/utils/datastructures.py">django.utils.datastructures.MultiValueDict</a>を継承したクラスであり，基本的な挙動は<code>MultiValueDict</code>に準ずる．<code>QueryDict</code>に特有の機能としてはコンストラクタの引数でmutableとimmutableの切り替えができる点とdictのset時にbytes型をstr型に変換出来る点がある．これによってbytesでやりとりされるHTTP通信のパラメータをよしなに扱うことができる．</p>
+<p>immutableの実装には<code>_assert_mutable</code>関数が利用されており，値を変更する処理の前に<code>_assert_mutable</code>を入れている．</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">QueryDict</span><span class="p">(</span><span class="n">MultiValueDict</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_string</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mutable</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="o">...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mutable</span> <span class="o">=</span> <span class="n">mutable</span>
+    <span class="o">...</span>
+    <span class="k">def</span> <span class="nf">_assert_mutable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mutable</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;This QueryDict instance is immutable&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>例えば要素を追加する<code>__setitem__</code>や要素を削除する<code>__delitem__</code>に実装は以下のように<code>_assert_mutable</code>の実行後に変更処理を行うようになっている．</p>
+<div class="highlight"><pre><span></span><code>    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assert_mutable</span><span class="p">()</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">bytes_to_text</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">bytes_to_text</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_assert_mutable</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="djangomultivaluedict">DjangoのMultiValueDict</h2>
 <h2 id="django-rest-frameworkrequest">Django Rest FrameworkのRequestクラス</h2>
 <p>Under construction.</p>
                 
