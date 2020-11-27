@@ -120,7 +120,7 @@ Djangoではこのようにして初期化された`HTTPRequest`クラスを用�
 
 ## Django QueryDict
 
-DjangoのHTTPRequestは以下のようにGETとPOSTというメンバーを持ち，それぞれ[django.http.QueryDict](https://github.com/django/django/blob/master/django/http/request.py)というデータ構造を持つ．本節ではこの`QueryDict`について解説する．
+DjangoのHTTPRequestは以下のようにGETとPOSTというメンバーを持ち，それぞれ[django.http.QueryDict](https://github.com/django/django/blob/master/django/http/request.py)というデータ構造を持つ．`QueryDict`はdictを継承したクラスであるため使い勝手は大きくは変わらないが，少し癖があるため本節ではこの`QueryDict`について解説する．
 
 ```python
 class HttpRequest:
@@ -150,7 +150,7 @@ class QueryDict(MultiValueDict):
             raise AttributeError("This QueryDict instance is immutable")
 ```
 
-例えば要素を追加する`__setitem__`や要素を削除する`__delitem__`に実装は以下のように`_assert_mutable`の実行後に変更処理を行うようになっている．
+例えば要素を追加する`__setitem__`や要素を削除する`__delitem__`の実装は以下のように`_assert_mutable`の実行後に変更処理を行うようになっている．
 
 ```python
     def __setitem__(self, key, value):
@@ -165,6 +165,8 @@ class QueryDict(MultiValueDict):
 ```
 
 ## DjangoのMultiValueDict
+
+`QueryDict`のより詳細な実態を知るためその継承元のクラスである`MultiValueDict`の実装を見ていく．
 
 
 ## Django Rest FrameworkのRequestクラス
