@@ -2,5 +2,7 @@
 
 ```shell
 # Run mkdocs server.
-docker-compose up
+make serve
+# Build documents.
+make build
 ```
