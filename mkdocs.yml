@@ -12,4 +12,5 @@ nav:
   - Home: index.md
   - Views: views.md
   - Request: request.md
+  - Middleware: middleware.md
   - Refenreces: references.md
