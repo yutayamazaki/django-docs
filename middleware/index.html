@@ -14,7 +14,7 @@
     
     
       
-        <title>Refenreces - How Django Works</title>
+        <title>Middleware - How Django Works</title>
       
     
     
@@ -57,7 +57,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#references" class="md-skip">
+        <a href="#djangomiddleware" class="md-skip">
           Skip to content
         </a>
       
@@ -87,7 +87,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Refenreces
+              Middleware
             
           </span>
         </div>
@@ -195,18 +195,6 @@
       
       
 
-
-  <li class="md-nav__item">
-    <a href="../middleware/" class="md-nav__link">
-      Middleware
-    </a>
-  </li>
-
-    
-      
-      
-      
-
   
 
 
@@ -217,10 +205,51 @@
       
     
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Middleware
+        <span class="md-nav__icon md-icon"></span>
+      </label>
+    
     <a href="./" class="md-nav__link md-nav__link--active">
-      Refenreces
+      Middleware
     </a>
     
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#middleware" class="md-nav__link">
+    Middlewareの設定
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../references/" class="md-nav__link">
+      Refenreces
+    </a>
   </li>
 
     
@@ -241,6 +270,21 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#middleware" class="md-nav__link">
+    Middlewareの設定
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -252,7 +296,7 @@
               
                 
                 
-                <h1 id="references">References</h1>
+                <h1 id="djangomiddleware">Djangoのmiddlewareについて</h1>
 <table>
 <thead>
 <tr>
@@ -275,14 +319,53 @@
 </tr>
 </tbody>
 </table>
-<p>Djangoやその周辺ツールの実装・理解に役立つ文献を紹介する．</p>
+<p>DjangoのmiddlewareはユーザーからのHTTPリクエストに対して常に実行されるpluginのことであり，大きくWSGI MiddlewreとDjango Middlewareに分類される．</p>
 <ul>
-<li><a href="https://tell-k.github.io/djangocongressjp2019">Djangoで静的ファイルとうまくやる</a></li>
-<li><a href="https://medium.com/creditengine-tech/django%E3%81%AF%E3%83%91%E3%82%B9%E3%83%AF%E3%83%BC%E3%83%89%E3%82%92%E3%81%A9%E3%81%86%E3%82%84%E3%81%A3%E3%81%A6%E4%BF%9D%E5%AD%98%E3%81%97%E3%81%A6%E3%81%84%E3%82%8B%E3%81%AE%E3%81%8B-64a4b38904ff">Djangoはパスワードをどうやって保存しているのか. | CreditEngine Tech | Medium</a></li>
-<li><a href="https://speakerdeck.com/denzow/imasarazhen-rifan-ru-django-migration">いまさら振り返る Django Migration - Speaker Deck</a></li>
-<li><a href="https://speakerdeck.com/akiyoko/django-security-measures-for-business-djangocon-jp-2019">現場で使える Django のセキュリティ対策 / Django security measures for business (DjangoCon JP 2019) - Speaker Deck</a></li>
-<li><a href="https://speakerdeck.com/thinkami/django-congress-jp-2018-talk">Django・WSGIミドルウェア入門/django-congress-jp-2018-talk - Speaker Deck</a></li>
+<li>リクエストを受け取る</li>
+<li>WSGI Middleware</li>
+<li>Django Middleware</li>
+<li>Django View</li>
+<li>Django Middleware</li>
+<li>WSGI Middleware</li>
+<li>レスポンスを返す</li>
 </ul>
+<p>Djangoは上記のような流れでHTTP通信を行うため，各APIに共通で実装したい処理などはmiddlewareとして記述することができる．</p>
+<h2 id="middleware">Middlewareの設定</h2>
+<p><code>settings.py</code>の<code>MIDDLEWARE</code>という変数でMiddlewareの設定を行う．Djangoのデフォルトでは以下の値が設定されている．</p>
+<div class="highlight"><pre><span></span><code><span class="n">MIDDLEWARE</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;django.middleware.security.SecurityMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.sessions.middleware.SessionMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.middleware.common.CommonMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.middleware.csrf.CsrfViewMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.auth.middleware.AuthenticationMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.contrib.messages.middleware.MessageMiddleware&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;django.middleware.clickjacking.XFrameOptionsMiddleware&#39;</span><span class="p">,</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>このように各Middlewareへのフルパスを文字列で与えることでMiddlewareが実行される．Djangoはリクエストを受け取ると<code>MIDDLEWARE</code>に記述されたMiddlewareをListの先頭から順に実行し，Viewを経てレスポンスを返す際はListの逆順にMiddlewareの処理を実行する．</p>
+<p>Djangoの公式ドキュメントに記載されている関数ベースのシンプルなMiddlewareの実装を見てみる．以下のようにget_responseというviewのhandlerを受け取り，requestを引数として受け取るCallableなオブジェクトを返せばそれでDjangoのMiddlewareとして機能する．</p>
+<div class="highlight"><pre><span></span><code><span class="k">def</span> <span class="nf">simple_middleware</span><span class="p">(</span><span class="n">get_response</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">middleware</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+        <span class="c1"># Viewが呼ばれる前に実行したい処理を書く</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">get_response</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="c1"># Viewが呼ばれた後に実行したい処理を書く</span>
+        <span class="k">return</span> <span class="n">response</span>
+
+    <span class="k">return</span> <span class="n">middleware</span>
+</code></pre></div>
+<p>またクラスベースでMiddlewareを記述することも可能で，Djangoの公式ドキュメントでは以下のような例が記載されている．</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">SimpleMiddleware</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get_response</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_response</span> <span class="o">=</span> <span class="n">get_response</span>
+        <span class="c1"># One-time configuration and initialization.</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="c1"># Viewが呼ばれる前に実行したい処理を書く</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_response</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+        <span class="c1"># Viewが呼ばれた後に実行したい処理を書く</span>
+        <span class="k">return</span> <span class="n">response</span>
+</code></pre></div>
                 
               
               
@@ -301,7 +384,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="../middleware/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../request/" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -310,11 +393,25 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Middleware
+                Request
               </div>
             </div>
           </a>
         
+        
+          <a href="../references/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Refenreces
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
         
       </nav>
     </div>
