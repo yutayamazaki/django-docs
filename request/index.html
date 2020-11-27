@@ -257,6 +257,18 @@
   </li>
 
     
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../references/" class="md-nav__link">
+      Refenreces
+    </a>
+  </li>
+
+    
   </ul>
 </nav>
                   </div>
@@ -468,7 +480,7 @@
 </code></pre></div>
 <p>Djangoではこのようにして初期化された<code>HTTPRequest</code>クラスを用いて適切にHTTPリクエストの情報を利用しながら処理を記述する．</p>
 <h2 id="django-querydict">Django QueryDict</h2>
-<p>DjangoのHTTPRequestは以下のようにGETとPOSTというメンバーを持ち，それぞれ<a href="https://github.com/django/django/blob/master/django/http/request.py">django.http.QueryDict</a>というデータ構造を持つ．本節ではこの<code>QueryDict</code>について解説する．</p>
+<p>DjangoのHTTPRequestは以下のようにGETとPOSTというメンバーを持ち，それぞれ<a href="https://github.com/django/django/blob/master/django/http/request.py">django.http.QueryDict</a>というデータ構造を持つ．<code>QueryDict</code>はdictを継承したクラスであるため使い勝手は大きくは変わらないが，少し癖があるため本節ではこの<code>QueryDict</code>について解説する．</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span> <span class="nc">HttpRequest</span><span class="p">:</span>
 
     <span class="n">_encoding</span> <span class="o">=</span> <span class="kc">None</span>
@@ -491,7 +503,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mutable</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;This QueryDict instance is immutable&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p>例えば要素を追加する<code>__setitem__</code>や要素を削除する<code>__delitem__</code>に実装は以下のように<code>_assert_mutable</code>の実行後に変更処理を行うようになっている．</p>
+<p>例えば要素を追加する<code>__setitem__</code>や要素を削除する<code>__delitem__</code>の実装は以下のように<code>_assert_mutable</code>の実行後に変更処理を行うようになっている．</p>
 <div class="highlight"><pre><span></span><code>    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_assert_mutable</span><span class="p">()</span>
         <span class="n">key</span> <span class="o">=</span> <span class="n">bytes_to_text</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
@@ -503,6 +515,7 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="djangomultivaluedict">DjangoのMultiValueDict</h2>
+<p><code>QueryDict</code>のより詳細な実態を知るためその継承元のクラスである<code>MultiValueDict</code>の実装を見ていく．</p>
 <h2 id="django-rest-frameworkrequest">Django Rest FrameworkのRequestクラス</h2>
 <p>Under construction.</p>
                 
@@ -537,6 +550,20 @@
             </div>
           </a>
         
+        
+          <a href="../references/" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Refenreces
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
         
       </nav>
     </div>
